@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This CloudFormation template to create S3 Bucket
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Type of this BacketName.
+
+  OriginalDomainName:
+    Type: String
+
+  AcmId:
+    Type: String
+    Default: 123abc45-de6f-789g-0hij-klm12no3456p
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${OriginalDomainName}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+  MyBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MyS3Bucket
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Resource: !Sub arn:aws:s3:::${MyS3Bucket}/*
+            Principal:
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}
+
+  CloudFrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        PriceClass: PriceClass_All
+        Aliases:
+        - !Ref OriginalDomainName
+        Origins:
+        - S3OriginConfig:
+            OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+          DomainName: !Sub ${OriginalDomainName}.s3.amazonaws.com
+          Id: !Sub S3-${OriginalDomainName}
+        DefaultCacheBehavior:
+          TargetOriginId: !Sub S3-${OriginalDomainName}
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+          - GET
+          - HEAD
+          CachedMethods:
+          - GET
+          - HEAD
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+        ViewerCertificate:
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2019
+          AcmCertificateArn: !Sub arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/${AcmId}
+        HttpVersion: http2
+        Enabled: true
+        DefaultRootObject: index.html
+        Comment: !Sub ${OriginalDomainName} distribution
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref AWS::StackName
+
+
+Outputs:
+  S3BucketName:
+    Value: !Ref MyS3Bucket
+
+  URL:
+    Value: !Join [ "", [ "https://", !GetAtt [ CloudFrontDistribution, DomainName ]]]
