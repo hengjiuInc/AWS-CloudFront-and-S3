@@ -4,14 +4,15 @@ Description: This CloudFormation template to create S3 Bucket
 Parameters:
   S3BucketName:
     Type: String
-    Description: Type of this BacketName.
+    Description: Type the BacketName.
 
   OriginalDomainName:
     Type: String
 
   AcmId:
     Type: String
-    Default: 123abc45-de6f-789g-0hij-klm12no3456p
+    Default: ex.123abc45-de6f-789g-0hij-klm12no3456p
+    Description: ACM Identifier.
 
 Resources:
   MyS3Bucket:
