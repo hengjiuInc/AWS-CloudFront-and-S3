@@ -2,7 +2,7 @@
     <img src="https://www.hengjiu.jp/img/retina/header_logo@2x.jpg" alt="hengjiu logo" title="hengjiu" align="right" height="50" />
 </a>
 
-# [AWS] CloudFront and S3
+# [CFnTemplate] CloudFront + S3
 
 ## 構成図
 <div align="center">
@@ -10,4 +10,6 @@
 </div>
 
 
-## 使い方
+## 概要
+- CloudFrontとS3の構成です。
+- ドメインはオリジナルドメインを利用するため事前にACMで証明書を用意する必要があります。
