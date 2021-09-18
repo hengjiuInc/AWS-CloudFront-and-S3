@@ -13,3 +13,10 @@
 ## 概要
 - CloudFrontとS3の構成です。
 - ドメインはオリジナルドメインを利用するため事前にACMで証明書を用意する必要があります。
+
+
+---
+##### 関連URL
+- [管理キャッシュポリシーの使用](https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html)
+
+
