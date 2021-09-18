@@ -17,6 +17,5 @@
 
 ---
 ##### 関連URL
-- [管理キャッシュポリシーの使用](https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html)
-
+- <a href="https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html" target="_blank">管理キャッシュポリシーの使用</a>
 
